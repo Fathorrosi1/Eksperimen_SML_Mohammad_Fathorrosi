@@ -1,0 +1,35 @@
+name: Preprocessing Data
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  preprocess:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          pip install pandas numpy scikit-learn
+      
+      - name: Run preprocessing
+        run: |
+          python preprocessing/automate_mohammad_fathorrosi.py
+      
+      - name: Commit & push hasil preprocessing
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add namadataset_preprocessing/
+          git diff --quiet && git diff --staged --quiet || git commit -m "Auto-update dataset preprocessing"
+          git push
